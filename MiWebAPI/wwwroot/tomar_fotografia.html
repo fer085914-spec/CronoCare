@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CronoCare - Tomar Fotografía</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+                tailwind.config = {
+                    theme: {
+                        extend: {
+                            colors: {
+                                'crono-blue': '#27749C',
+                                'crono-light': '#E1F4F6',
+                                'crono-teal': '#287F89',
+                                'crono-dark': '#222222',
+                                'crono-btn-light': '#A8C9C9' /* Color verde claro para el botón REPETIR */
+                            }
+                        }
+                    }
+                }
+    </script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen bg-crono-light font-sans overflow-x-hidden flex flex-col">
+
+    <!-- Encabezado Azul -->
+    <div class="bg-crono-blue text-white p-4 shadow-md flex justify-between items-center z-10 w-full">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 flex items-center justify-center overflow-hidden shadow-sm">
+                <img src="/Images/logoCronoCare.png" alt="Logo CronoCare" class="w-full h-full object-cover">
+            </div>
+            <h1 class="text-2xl font-bold tracking-wide">CronoCare</h1>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA EXCLUSIVA PARA MÓVIL (Oculta en md:) -->
+    <!-- ========================================== -->
+    <div class="md:hidden flex-1 pb-24 w-full flex flex-col p-6 items-center">
+
+        <h2 class="text-sm font-bold text-center text-black mb-6 tracking-wide uppercase">TOMAR FOTOGRAFÍA</h2>
+
+        <!-- PASO 1: Visor de Cámara -->
+        <div id="pasoVisor" class="w-full flex flex-col items-center transition-all duration-300">
+            <!-- Cuadro simulando la cámara -->
+            <div class="w-full h-56 bg-[#D4DFE2] rounded-3xl border border-gray-300 flex items-center justify-center mb-8 shadow-inner">
+                <span class="text-gray-400 font-bold tracking-widest text-sm uppercase">Visor de cámara</span>
+            </div>
+
+            <button id="btnTomarFoto" class="bg-crono-teal text-white font-bold py-3 px-8 rounded-full hover:bg-crono-blue transition-colors shadow-md text-xs tracking-wider uppercase">
+                Tomar Fotografía
+            </button>
+        </div>
+
+        <!-- PASO 2: Foto Capturada (Oculto por defecto) -->
+        <div id="pasoCaptura" class="w-full flex flex-col items-center hidden transition-all duration-300">
+            <!-- Cuadro simulando la foto tomada -->
+            <div class="w-full h-56 bg-[#D4DFE2] rounded-3xl border border-gray-300 flex items-center justify-center mb-6 shadow-inner">
+                <span class="text-gray-400 font-bold tracking-widest text-sm uppercase">Foto Capturada</span>
+            </div>
+
+            <p class="text-sm font-semibold mb-6 text-gray-800 text-center">¿La fotografía es clara?</p>
+
+            <div class="flex gap-4 w-full justify-center">
+                <!-- Botón Repetir (Verde claro) -->
+                <button id="btnRepetir" class="bg-crono-btn-light text-crono-dark font-bold py-3 px-8 rounded-full hover:bg-gray-300 transition-colors shadow-md text-xs tracking-wider uppercase">
+                    Repetir
+                </button>
+                <!-- Botón Aceptar (Teal oscuro) -->
+                <button id="btnAceptar" class="bg-crono-teal text-white font-bold py-3 px-8 rounded-full hover:bg-crono-blue transition-colors shadow-md text-xs tracking-wider uppercase">
+                    Aceptar
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA PARA COMPUTADORA (Mensaje de bloqueo)-->
+    <!-- ========================================== -->
+    <div class="hidden md:flex flex-1 flex-col items-center justify-center p-10 text-center bg-white m-10 rounded-3xl shadow-sm border border-gray-200">
+        <span class="text-6xl mb-4">📱</span>
+        <h2 class="text-2xl font-bold text-crono-dark mb-2">Función exclusiva para móviles</h2>
+        <p class="text-gray-600 max-w-md">La captura de fotografías requiere el uso de la cámara de tu teléfono celular. Por favor, accede a esta función desde tu dispositivo móvil.</p>
+        <button onclick="window.history.back();" class="mt-8 bg-crono-blue text-white font-bold py-3 px-8 rounded-full shadow-md hover:bg-blue-700 transition-colors">
+            VOLVER AL FORMULARIO
+        </button>
+    </div>
+
+    <!-- BARRA DE NAVEGACIÓN INFERIOR (Móvil) -->
+    <div class="md:hidden fixed bottom-0 w-full h-16 bg-white border-t border-gray-200 flex justify-between items-center px-2 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] z-30">
+        <a href="index.html" class="flex flex-col items-center text-gray-400 hover:text-crono-teal w-1/5 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            <span class="text-[9px] font-bold mt-1">INICIO</span>
+        </a>
+        <button class="flex flex-col items-center text-gray-400 hover:text-crono-teal w-1/5 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+            <span class="text-[9px] font-bold mt-1">HOY</span>
+        </button>
+        <a href="nuevo_farmaco.html" class="relative -top-6 bg-crono-teal text-white w-14 h-14 rounded-full flex items-center justify-center text-4xl shadow-lg border-4 border-white transition-transform pb-1 z-50">
+            +
+        </a>
+        <button class="flex flex-col items-center text-gray-400 hover:text-crono-teal w-1/5 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span class="text-[9px] font-bold mt-1">LISTO</span>
+        </button>
+        <button class="flex flex-col items-center text-gray-400 hover:text-red-500 w-1/5 transition-colors" onclick="sessionStorage.removeItem('empleados_usuario'); window.location.replace('login.html');">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            <span class="text-[9px] font-bold mt-1">SALIR</span>
+        </button>
+    </div>
+
+    <!-- Lógica de interacciones (Cambio entre estados y regresar) -->
+    <script>
+                const visor = document.getElementById('pasoVisor');
+                const captura = document.getElementById('pasoCaptura');
+                const btnTomarFoto = document.getElementById('btnTomarFoto');
+                const btnRepetir = document.getElementById('btnRepetir');
+                const btnAceptar = document.getElementById('btnAceptar');
+
+                // Al presionar "TOMAR FOTOGRAFÍA" se oculta el visor y aparece la confirmación
+                btnTomarFoto.addEventListener('click', () => {
+                    visor.classList.add('hidden');
+                    captura.classList.remove('hidden');
+                });
+
+                // Al presionar "REPETIR" volvemos a la cámara
+                btnRepetir.addEventListener('click', () => {
+                    captura.classList.add('hidden');
+                    visor.classList.remove('hidden');
+                });
+
+                // Al presionar "ACEPTAR" usamos history.back() para regresar al formulario donde estábamos (Nuevo o Editar)
+                btnAceptar.addEventListener('click', () => {
+                    // Un pequeño efecto de carga opcional
+                    btnAceptar.textContent = "GUARDANDO...";
+                    setTimeout(() => {
+                        window.history.back();
+                    }, 500);
+                });
+    </script>
+</body>
+</html>

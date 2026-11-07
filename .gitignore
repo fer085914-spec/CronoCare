@@ -1,0 +1,17 @@
+# Archivos temporales de Visual Studio
+.vs/
+bin/
+obj/
+*.user
+*.suo
+
+# Dependencias frontend (si aplican)
+node_modules/
+dist/
+build/
+
+# Variables de entorno y logs
+.env
+.env.local
+*.log
+

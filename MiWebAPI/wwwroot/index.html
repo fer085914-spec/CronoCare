@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CronoCare - Menú Principal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'crono-blue': '#27749C',
+                        'crono-light': '#E1F4F6',
+                        'crono-teal': '#287F89',
+                        'crono-dark': '#222222'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen bg-crono-light font-sans overflow-x-hidden">
+
+    <!-- Menú Lateral Desplegable (PC) -->
+    <div id="sidebar" class="fixed inset-y-0 right-0 w-64 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50 flex flex-col">
+        <div class="p-5 bg-crono-blue text-white flex justify-between items-center">
+            <span class="font-bold text-lg">Menú CronoCare</span>
+            <button id="closeSidebar" class="text-white hover:text-gray-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="flex flex-col p-6 gap-6">
+            <a href="index.html" class="text-crono-teal font-semibold flex items-center gap-2">
+                <span class="text-xl">🏠</span> Inicio
+            </a>
+            <a href="hoy.html" class="text-gray-700 hover:text-crono-teal font-semibold flex items-center gap-2">
+                <span class="text-xl">📅</span> Agenda de Hoy
+            </a>
+            <a href="nuevo_farmaco.html" class="text-gray-700 hover:text-crono-teal font-semibold flex items-center gap-2">
+                <span class="text-xl">➕</span> Nuevo Registro
+            </a>
+            <a href="listo.html" class="text-gray-700 hover:text-crono-teal font-semibold flex items-center gap-2">
+                <span class="text-xl">✅</span> Terminados
+            </a>
+            <hr>
+            <button id="btnCerrarSesionLateral" class="text-left text-red-500 hover:text-red-700 font-semibold flex items-center gap-2">
+                <span class="text-xl">🚪</span> Salir
+            </button>
+        </div>
+    </div>
+
+    <!-- Fondo oscuro semitransparente -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 transition-opacity"></div>
+
+    <!-- Contenedor principal -->
+    <div class="w-full min-h-screen relative flex flex-col">
+
+        <!-- Encabezado Azul -->
+        <div class="bg-crono-blue text-white p-4 md:px-8 md:py-5 shadow-md flex justify-between items-center z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 flex items-center justify-center overflow-hidden shadow-sm">
+                    <img src="/Images/logoCronoCare.png" alt="Logo CronoCare" class="w-full h-full object-cover">
+                </div>
+                <h1 class="text-2xl md:text-3xl font-bold tracking-wide">CronoCare</h1>
+            </div>
+            <button id="openSidebar" class="hidden md:block text-white hover:text-crono-light transition-colors">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+
+        <!-- Área de Contenido -->
+        <div class="flex-1 pb-24 md:pb-8 w-full max-w-3xl mx-auto flex flex-col px-4 md:px-0">
+
+            <div class="w-full">
+                <div class="p-6 md:px-10 md:pt-10 pb-4">
+                    <h2 class="text-xl md:text-2xl font-bold text-black">¡Hola <span id="nombreUsuario">_____</span>!</h2>
+                    <p class="text-gray-800 mt-2 md:text-lg font-semibold">Esquemas médicos activos:</p>
+                </div>
+
+                <!-- CONTENEDOR DINÁMICO DE SECCIONES DESPLEGABLES POR PERFIL -->
+                <div id="contenedorPerfilesIndex" class="px-6 md:px-10 flex flex-col gap-4">
+
+                    <!-- EJEMPLO ESTÁTICO DE CÓMO SE VERÁ CADA ACORDEÓN POR PERFIL -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                        <!-- Cabecera Desplegable del Perfil -->
+                        <button onclick="toggleAcordeon('perfil-propio')" class="w-full p-5 bg-white flex justify-between items-center hover:bg-crono-light/30 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-crono-light text-crono-teal rounded-full flex items-center justify-center font-bold text-lg">
+                                    👤
+                                </div>
+                                <div class="text-left">
+                                    <h3 class="font-bold text-crono-dark text-base md:text-lg">Mi Perfil (Propio)</h3>
+                                    <p class="text-xs text-gray-500">- medicamentos activos</p>
+                                </div>
+                            </div>
+                            <svg id="icon-perfil-propio" class="w-6 h-6 text-crono-teal transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+
+                        <!-- Contenido Desplegable (Lista de Fármacos de este perfil) -->
+                        <div id="perfil-propio" class="hidden flex flex-col gap-3 p-4 bg-gray-50 border-t border-gray-100">
+
+                            <!-- Tarjeta de Fármaco 1 -->
+                            <a href="detalle_farmaco.html" class="block bg-white rounded-xl p-4 shadow-xs border border-gray-200 relative hover:shadow-md transition-shadow group">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-12 h-12 bg-crono-light rounded-full flex items-center justify-center shrink-0 group-hover:bg-crono-teal transition-colors">
+                                        <svg class="w-6 h-6 text-crono-blue group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M17.34 6.66a5.5 5.5 0 00-7.78 0L6.66 9.56a5.5 5.5 0 000 7.78 5.5 5.5 0 007.78 0l2.9-2.9a5.5 5.5 0 000-7.78zm-4.24 6.36l-2.12-2.12m5.66-2.12L13.1 5.24"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1 pr-12">
+                                        <h4 class="font-bold text-crono-dark text-base leading-tight group-hover:text-crono-teal transition-colors">Fármaco</h4>
+                                        <p class="text-xs md:text-sm text-gray-500 mt-0.5">Próxima toma: <span class="font-semibold text-crono-blue">00:00 hrs</span></p>
+                                    </div>
+                                </div>
+                            </a>
+
+                        </div>
+                    </div>
+                    <!-- FIN DEL EJEMPLO -->
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- BOTÓN FLOTANTE PC -->
+        <a href="perfiles.html" title="Nuevo Registro" class="hidden md:flex fixed bottom-10 right-10 bg-crono-teal text-white w-16 h-16 rounded-full items-center justify-center text-5xl shadow-2xl hover:scale-110 hover:bg-crono-blue transition-all z-40 pb-2">
+            +
+        </a>
+
+        <!-- BARRA DE NAVEGACIÓN INFERIOR MÓVIL -->
+        <div class="md:hidden fixed bottom-0 w-full h-16 bg-white border-t border-gray-200 flex justify-between items-center px-2 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] z-30">
+            <a href="index.html" class="flex flex-col items-center text-crono-teal w-1/5 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="text-[9px] font-bold mt-1">INICIO</span>
+            </a>
+            <a href="hoy.html" class="flex flex-col items-center text-gray-400 hover:text-crono-teal w-1/5 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                <span class="text-[9px] font-bold mt-1">HOY</span>
+            </a>
+            <!-- Botón central redirige a perfiles para mantener la regla de negocio -->
+            <a href="perfiles.html" class="relative -top-6 bg-crono-teal text-white w-14 h-14 rounded-full flex items-center justify-center text-4xl shadow-lg border-4 border-white transition-transform pb-1 z-50">
+                +
+            </a>
+            <a href="listo.html" class="flex flex-col items-center text-gray-400 hover:text-crono-teal w-1/5 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-[9px] font-bold mt-1">LISTO</span>
+            </a>
+            <button id="btnCerrarSesion" class="flex flex-col items-center text-gray-400 hover:text-red-500 w-1/5 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                <span class="text-[9px] font-bold mt-1">SALIR</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Script de Funcionalidad Acordeón y Carga de Usuario -->
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
+
+        function toggleMenu() {
+            sidebar.classList.toggle('translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+        if (openBtn) openBtn.addEventListener('click', toggleMenu);
+        if (closeBtn) closeBtn.addEventListener('click', toggleMenu);
+        if (overlay) overlay.addEventListener('click', toggleMenu);
+
+        // FUNCIÓN PARA ABRIR/CERRAR CADA LISTA DESPLEGABLE (ACORDEÓN)
+        function toggleAcordeon(idSeccion) {
+            const contenido = document.getElementById(idSeccion);
+            const icono = document.getElementById('icon-' + idSeccion);
+
+            if (contenido.classList.contains('hidden')) {
+                contenido.classList.remove('hidden');
+                icono.classList.add('rotate-180');
+            } else {
+                contenido.classList.add('hidden');
+                icono.classList.remove('rotate-180');
+            }
+        }
+
+        function cerrarSesion() {
+            sessionStorage.removeItem("empleados_usuario");
+            localStorage.removeItem("usuarioLogueado");
+            window.location.replace("login.html");
+        }
+        document.getElementById('btnCerrarSesionLateral').addEventListener('click', cerrarSesion);
+        const btnSalirMovil = document.getElementById('btnCerrarSesion');
+        if (btnSalirMovil) {
+            btnSalirMovil.addEventListener('click', cerrarSesion);
+        }
+
+        // Cargar nombre del usuario logueado
+        document.addEventListener("DOMContentLoaded", () => {
+            const usuarioGuardado = localStorage.getItem("usuarioLogueado");
+            if (usuarioGuardado) {
+                try {
+                    const usuario = JSON.parse(usuarioGuardado);
+                    const spanNombre = document.getElementById("nombreUsuario");
+                    if (spanNombre && usuario.nombre) {
+                        spanNombre.textContent = usuario.nombre;
+                    }
+                } catch (error) {
+                    console.error("Error al leer los datos del usuario:", error);
+                }
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // 1. Mostrar el nombre del usuario logueado en el saludo
+            mostrarNombreUsuario();
+
+            // 2. Obtener el ID del usuario actual (puedes guardarlo en localStorage al iniciar sesión)
+            const idUsuarioLogueado = localStorage.getItem("idUsuario") || 1; // ID de respaldo por defecto
+
+            // 3. Cargar las secciones desplegables de perfiles
+            cargarSeccionesPerfiles(idUsuarioLogueado);
+        });
+
+        // Función para pintar el nombre en el saludo
+        function mostrarNombreUsuario() {
+            const nombreGuardado = localStorage.getItem("usuarioNombre");
+            const spanNombre = document.getElementById("nombreUsuario");
+            if (nombreGuardado && spanNombre) {
+                spanNombre.textContent = nombreGuardado;
+            }
+        }
+
+        // Cargar perfiles al abrir la página principal (Index) conectándose al API
+        async function cargarSeccionesPerfiles(idUsuario) {
+            try {
+                const response = await fetch(`https://localhost:7150/api/cronocare/perfiles/${idUsuario}`);
+                const perfiles = await response.json();
+
+                const contenedor = document.getElementById("contenedor-perfiles");
+                contenedor.innerHTML = ""; // Limpiar contenedor
+
+                if (perfiles.length === 0) {
+                    contenedor.innerHTML = `<p class="text-muted text-center">No hay perfiles registrados.</p>`;
+                    return;
+                }
+
+                perfiles.forEach(perfil => {
+                    // Estructura visual de acordeón / sección desplegable por perfil
+                    const seccionHTML = `
+                <div class="card-perfil bg-white border border-gray-200 rounded-2xl shadow-sm p-4 mb-3">
+                    <div class="d-flex justify-content-between align-items-center flex items-center justify-between cursor-pointer" onclick="toggleDesplegable(${perfil.idPerfil})">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold">
+                                <i class="bi bi-person-circle">👤</i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-gray-800 text-lg">${perfil.nombre || perfil.tipoPerfil}</h5>
+                                <small class="text-gray-500" id="contador-${perfil.idPerfil}">Cargando medicamentos...</small>
+                            </div>
+                        </div>
+                        <span class="text-gray-400 text-xl" id="icono-${perfil.idPerfil}">▼</span>
+                    </div>
+                    
+                    <!-- Contenido desplegable donde se listarán los medicamentos -->
+                    <div id="desplegable-${perfil.idPerfil}" class="medicamentos-lista mt-3 pt-3 border-t border-gray-100" style="display: none;">
+                        <!-- Se inyectarán los medicamentos activos -->
+                    </div>
+                </div>
+            `;
+                    contenedor.innerHTML += seccionHTML;
+
+                    // Cargar los medicamentos correspondientes a este perfil
+                    cargarMedicamentosPorPerfil(idUsuario, perfil.idPerfil);
+                });
+
+            } catch (error) {
+                console.error("Error al cargar perfiles:", error);
+            }
+        }
+
+        // Función para obtener los medicamentos de un perfil mediante el SP y pintarlos
+        async function cargarMedicamentosPorPerfil(idUsuario, idPerfil) {
+            try {
+                const response = await fetch(`https://localhost:7150/api/cronocare/medicamentos/activos/${idUsuario}/${idPerfil}`);
+                const medicamentos = await response.json();
+
+                const contenedorLista = document.getElementById(`desplegable-${idPerfil}`);
+                const contadorLabel = document.getElementById(`contador-${idPerfil}`);
+
+                contadorLabel.innerText = `${medicamentos.length} medicamentos activos`;
+                contenedorLista.innerHTML = "";
+
+                if (medicamentos.length === 0) {
+                    contenedorLista.innerHTML = `<p class="text-gray-400 text-sm italic">No hay esquemas médicos activos para este perfil.</p>`;
+                    return;
+                }
+
+                medicamentos.forEach(med => {
+                    contenedorLista.innerHTML += `
+                <div class="py-2 border-b border-gray-50 flex justify-between items-center">
+                    <div>
+                        <strong class="text-gray-700">${med.nombreMedicamento}</strong> <span class="text-xs text-gray-400">(${med.viaAdministracion})</span><br>
+                        <small class="text-indigo-600 font-medium">Próxima toma: ${med.proximaToma ? new Date(med.proximaToma).toLocaleString() : 'N/A'}</small>
+                    </div>
+                </div>
+            `;
+                });
+            } catch (error) {
+                console.error(`Error cargando medicamentos del perfil ${idPerfil}:`, error);
+            }
+        }
+
+        // Función para abrir/cerrar el acordeón visual de cada perfil
+        function toggleDesplegable(idPerfil) {
+            const el = document.getElementById(`desplegable-${idPerfil}`);
+            const icono = document.getElementById(`icono-${idPerfil}`);
+
+            if (el.style.display === "none") {
+                el.style.display = "block";
+                icono.textContent = "▲";
+            } else {
+                el.style.display = "none";
+                icono.textContent = "▼";
+            }
+        }
+    </script>
+
+    <!-- <script src="js/app.js"></script> -->
+</body>
+</html>

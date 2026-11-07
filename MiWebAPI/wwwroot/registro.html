@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CronoCare - Registro</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+                tailwind.config = {
+                    theme: {
+                        extend: {
+                            colors: {
+                                'crono-blue': '#27749C',
+                                'crono-light': '#E1F4F6',
+                                'crono-teal': '#287F89',
+                                'crono-dark': '#222222'
+                            }
+                        }
+                    }
+                }
+    </script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen bg-crono-light font-sans flex flex-col overflow-x-hidden">
+
+    <!-- Encabezado Azul (Visible en todas las pantallas) -->
+    <div class="bg-crono-blue text-white p-4 md:px-8 md:py-5 shadow-md flex items-center gap-3 z-10 w-full">
+        <div class="w-10 h-10 flex items-center justify-center overflow-hidden shadow-sm">
+            <img src="/Images/logoCronoCare.png" alt="Logo CronoCare" class="w-full h-full object-cover">
+        </div>
+        <h1 class="text-2xl md:text-3xl font-bold tracking-wide">CronoCare</h1>
+    </div>
+
+    <!-- Contenedor del Formulario (Centrado y con ancho máximo) -->
+    <div class="flex-1 flex flex-col items-center justify-center p-6 md:py-10 w-full max-w-lg mx-auto">
+
+        <div class="flex flex-col items-center mb-8 text-center">
+            <h2 class="text-2xl md:text-3xl font-bold text-crono-dark mb-2">Crea tu perfil en segundos</h2>
+            <p class="text-gray-600">Completa los datos para comenzar</p>
+        </div>
+
+        <form id="registerForm" class="w-full flex flex-col gap-4">
+
+            <div class="w-full">
+                <label class="block text-sm text-gray-600 mb-1 pl-2 font-semibold">Nombre o apodo:</label>
+                <input type="text" id="nombre" class="w-full border-2 border-transparent rounded-full px-4 py-3 focus:outline-none focus:border-crono-teal shadow-sm transition-colors" required>
+            </div>
+
+            <div class="w-full">
+                <label class="block text-sm text-gray-600 mb-1 pl-2 font-semibold">Correo electrónico:</label>
+                <input type="email" id="email" class="w-full border-2 border-transparent rounded-full px-4 py-3 focus:outline-none focus:border-crono-teal shadow-sm transition-colors" required>
+            </div>
+
+            <div class="w-full">
+                <label class="block text-sm text-gray-600 mb-1 pl-2 font-semibold">Contraseña:</label>
+                <input type="password" id="password" class="w-full border-2 border-transparent rounded-full px-4 py-3 focus:outline-none focus:border-crono-teal shadow-sm transition-colors" required>
+            </div>
+
+            <div class="mt-2 w-full">
+                <label class="block text-sm text-gray-600 mb-2 pl-2 font-semibold">¿Cómo usarías CronoCare?</label>
+                <div class="flex flex-col gap-3 bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <input type="radio" name="uso" value="personal" checked class="w-5 h-5 text-crono-teal focus:ring-crono-teal">
+                        <span class="text-gray-700 group-hover:text-crono-teal transition-colors">Solo para mí (Personal)</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <input type="radio" name="uso" value="cuidador" class="w-5 h-5 text-crono-teal focus:ring-crono-teal">
+                        <span class="text-gray-700 group-hover:text-crono-teal transition-colors">Para cuidar a alguien más</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <input type="radio" name="uso" value="ambos" class="w-5 h-5 text-crono-teal focus:ring-crono-teal">
+                        <span class="text-gray-700 group-hover:text-crono-teal transition-colors">Ambas</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Contenedor para mostrar errores de la API -->
+            <div id="mensajeRegistro" class="hidden text-red-500 font-semibold text-sm text-center mt-2"></div>
+
+            <button type="submit" id="btnRegister" class="mt-4 bg-crono-teal text-white font-bold py-3.5 rounded-full hover:bg-crono-blue transition-colors shadow-lg w-full text-lg">
+                CREAR CUENTA
+            </button>
+        </form>
+
+        <div class="mt-8 text-center text-sm">
+            <a href="login.html" class="text-gray-500 hover:text-crono-teal hover:underline transition-colors font-medium">
+                ← Volver al inicio de sesión
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Script de lógica de registro -->
+    <script src="js/registro.js"></script>
+</body>
+</html>

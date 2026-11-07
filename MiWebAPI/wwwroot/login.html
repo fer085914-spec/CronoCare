@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CronoCare - Iniciar Sesión</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+                tailwind.config = {
+                    theme: {
+                        extend: {
+                            colors: {
+                                'crono-blue': '#27749C',
+                                'crono-light': '#E1F4F6',
+                                'crono-teal': '#287F89',
+                                'crono-dark': '#222222'
+                            }
+                        }
+                    }
+                }
+    </script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen bg-crono-light font-sans flex flex-col overflow-x-hidden">
+
+    <!-- Contenedor Principal: Columna en móvil, Fila dividida en PC -->
+    <!-- Al quitar el encabezado, flex-1 y justify-center centran todo el contenido en la pantalla -->
+    <div class="flex-1 flex flex-col md:flex-row items-center justify-center p-6 md:p-12 gap-8 md:gap-24 w-full max-w-5xl mx-auto">
+
+        <!-- Mitad Izquierda: Logotipo -->
+        <div class="flex flex-col items-center">
+            <div class="w-32 h-32 md:w-64 md:h-64 bg-white rounded-full flex items-center justify-center shadow-md overflow-hidden">
+                <img src="/Images/logoCronoCare.png" alt="Logo CronoCare" class="w-full h-full object-cover">
+            </div>
+        </div>
+
+        <!-- Mitad Derecha: Formulario -->
+        <div class="w-full max-w-sm flex flex-col items-center">
+            <h2 class="text-xl md:text-2xl font-semibold text-crono-dark mb-6">¡Bienvenido de nuevo!</h2>
+
+            <form id="loginForm" class="w-full flex flex-col gap-4">
+                <div class="w-full text-left">
+                    <label class="block text-sm text-gray-600 mb-1 pl-2">Correo electrónico:</label>
+                    <input type="email" id="email" value="admin@demo.com" class="w-full border-2 border-transparent rounded-full px-4 py-3 focus:outline-none focus:border-crono-teal shadow-sm" required>
+                </div>
+
+                <div class="w-full text-left">
+                    <label class="block text-sm text-gray-600 mb-1 pl-2">Contraseña:</label>
+                    <input type="password" id="password" value="Admin123*" class="w-full border-2 border-transparent rounded-full px-4 py-3 focus:outline-none focus:border-crono-teal shadow-sm" required>
+                </div>
+
+                <!-- Contenedor de Errores de API -->
+                <div id="mensajeLogin" class="hidden text-red-500 font-semibold text-sm text-center mt-2"></div>
+
+                <button type="submit" id="btnLogin" class="mt-4 bg-crono-teal text-white font-bold py-3 rounded-full hover:bg-crono-blue transition-colors shadow-lg w-full">
+                    INICIAR SESIÓN
+                </button>
+            </form>
+
+            <!-- Enlace a Registro -->
+            <div class="mt-8 text-center text-sm">
+                <p class="text-gray-600">¿Aún no tienes cuenta?</p>
+                <a href="registro.html" class="text-crono-teal font-bold hover:underline mt-1 inline-block">
+                    Regístrate aquí
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script de conexión a la API -->
+    <script src="js/login.js"></script>
+</body>
+</html>

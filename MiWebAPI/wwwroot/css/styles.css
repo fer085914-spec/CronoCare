@@ -1,0 +1,52 @@
+body {
+  background: #f4f7fb;
+  min-height: 100vh;
+}
+
+.form-card {
+  top: 1rem;
+}
+
+.card {
+  border: 0;
+  border-radius: 0.9rem;
+}
+
+.table th {
+  white-space: nowrap;
+}
+
+.acciones {
+  white-space: nowrap;
+}
+
+.acciones .btn + .btn {
+  margin-left: 0.35rem;
+}
+
+.home-hero { background: linear-gradient(135deg, #eef5ff 0%, #ffffff 65%); }
+.module-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.module-card:hover { transform: translateY(-4px); }
+
+.module-icon,
+.login-logo {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 0.9rem;
+  display: grid;
+  place-items: center;
+  background: #0d6efd;
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.login-page { background: linear-gradient(135deg, #0d6efd 0%, #17365d 100%); }
+.login-card { width: min(100%, 28rem); }
+.login-logo { border-radius: 50%; margin-bottom: 0; }
+
+@media (max-width: 767.98px) {
+  .navbar-text {
+    display: none;
+  }
+}
