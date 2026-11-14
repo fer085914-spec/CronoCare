@@ -81,47 +81,9 @@
 
                 <!-- CONTENEDOR DINÁMICO DE SECCIONES DESPLEGABLES POR PERFIL -->
                 <div id="contenedorPerfilesIndex" class="px-6 md:px-10 flex flex-col gap-4">
-
-                    <!-- EJEMPLO ESTÁTICO DE CÓMO SE VERÁ CADA ACORDEÓN POR PERFIL -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                        <!-- Cabecera Desplegable del Perfil -->
-                        <button onclick="toggleAcordeon('perfil-propio')" class="w-full p-5 bg-white flex justify-between items-center hover:bg-crono-light/30 transition-colors">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-crono-light text-crono-teal rounded-full flex items-center justify-center font-bold text-lg">
-                                    👤
-                                </div>
-                                <div class="text-left">
-                                    <h3 class="font-bold text-crono-dark text-base md:text-lg">Mi Perfil (Propio)</h3>
-                                    <p class="text-xs text-gray-500">- medicamentos activos</p>
-                                </div>
-                            </div>
-                            <svg id="icon-perfil-propio" class="w-6 h-6 text-crono-teal transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
-
-                        <!-- Contenido Desplegable (Lista de Fármacos de este perfil) -->
-                        <div id="perfil-propio" class="hidden flex flex-col gap-3 p-4 bg-gray-50 border-t border-gray-100">
-
-                            <!-- Tarjeta de Fármaco 1 -->
-                            <a href="detalle_farmaco.html" class="block bg-white rounded-xl p-4 shadow-xs border border-gray-200 relative hover:shadow-md transition-shadow group">
-                                <div class="flex items-start gap-3">
-                                    <div class="w-12 h-12 bg-crono-light rounded-full flex items-center justify-center shrink-0 group-hover:bg-crono-teal transition-colors">
-                                        <svg class="w-6 h-6 text-crono-blue group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M17.34 6.66a5.5 5.5 0 00-7.78 0L6.66 9.56a5.5 5.5 0 000 7.78 5.5 5.5 0 007.78 0l2.9-2.9a5.5 5.5 0 000-7.78zm-4.24 6.36l-2.12-2.12m5.66-2.12L13.1 5.24"></path>
-                                        </svg>
-                                    </div>
-                                    <div class="flex-1 pr-12">
-                                        <h4 class="font-bold text-crono-dark text-base leading-tight group-hover:text-crono-teal transition-colors">Fármaco</h4>
-                                        <p class="text-xs md:text-sm text-gray-500 mt-0.5">Próxima toma: <span class="font-semibold text-crono-blue">00:00 hrs</span></p>
-                                    </div>
-                                </div>
-                            </a>
-
-                        </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm text-center">
+                        <p class="text-gray-500">Cargando perfiles y esquemas...</p>
                     </div>
-                    <!-- FIN DEL EJEMPLO -->
-
                 </div>
             </div>
 
@@ -142,7 +104,6 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                 <span class="text-[9px] font-bold mt-1">HOY</span>
             </a>
-            <!-- Botón central redirige a perfiles para mantener la regla de negocio -->
             <a href="perfiles.html" class="relative -top-6 bg-crono-teal text-white w-14 h-14 rounded-full flex items-center justify-center text-4xl shadow-lg border-4 border-white transition-transform pb-1 z-50">
                 +
             </a>
@@ -157,7 +118,7 @@
         </div>
     </div>
 
-    <!-- Script de Funcionalidad Acordeón y Carga de Usuario -->
+    <!-- Script de Funcionalidad y Carga Dinámica -->
     <script>
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
@@ -165,14 +126,165 @@
         const closeBtn = document.getElementById('closeSidebar');
 
         function toggleMenu() {
-            sidebar.classList.toggle('translate-x-full');
-            overlay.classList.toggle('hidden');
+            if (sidebar && overlay) {
+                sidebar.classList.toggle('translate-x-full');
+                overlay.classList.toggle('hidden');
+            }
         }
         if (openBtn) openBtn.addEventListener('click', toggleMenu);
         if (closeBtn) closeBtn.addEventListener('click', toggleMenu);
         if (overlay) overlay.addEventListener('click', toggleMenu);
 
-        // FUNCIÓN PARA ABRIR/CERRAR CADA LISTA DESPLEGABLE (ACORDEÓN)
+        // --- SESIÓN Y UTILIDADES ---
+        const CLAVE_SESION = 'usuarioLogueado';
+        const API = '/api/Auth';
+
+        function obtenerUsuarioSesion() {
+            const guardado = localStorage.getItem(CLAVE_SESION);
+            if (!guardado) return null;
+            try {
+                const u = JSON.parse(guardado);
+                const id = u.id ?? u.idUsuario;
+                return id ? { id: Number(id), nombre: u.nombre, tipoUso: u.tipoUso } : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem(CLAVE_SESION);
+            sessionStorage.removeItem('perfilSeleccionado');
+            window.location.replace('login.html');
+        }
+
+        document.getElementById('btnCerrarSesionLateral')?.addEventListener('click', cerrarSesion);
+        document.getElementById('btnCerrarSesion')?.addEventListener('click', cerrarSesion);
+
+        async function llamarApi(url, opciones) {
+            const respuesta = await fetch(url, opciones);
+            let datos = null;
+            try { datos = await respuesta.json(); } catch (e) { }
+            if (!respuesta.ok) {
+                throw new Error((datos && datos.message) || 'No se pudo completar la solicitud.');
+            }
+            return datos;
+        }
+
+        // --- CARGA DEL DASHBOARD ---
+        document.addEventListener("DOMContentLoaded", async () => {
+            const usuario = obtenerUsuarioSesion();
+            if (!usuario) {
+                window.location.replace("login.html");
+                return;
+            }
+
+            const spanNombre = document.getElementById("nombreUsuario");
+            if (spanNombre && usuario.nombre) {
+                spanNombre.textContent = usuario.nombre;
+            }
+
+            await cargarSeccionesPerfiles(usuario.id);
+        });
+
+        async function cargarSeccionesPerfiles(idUsuario) {
+            const contenedor = document.getElementById("contenedorPerfilesIndex");
+
+            try {
+                const perfiles = await llamarApi(`${API}/perfiles/${idUsuario}`);
+
+                if (!perfiles || perfiles.length === 0) {
+                    contenedor.innerHTML = `
+                            <div class="bg-white p-6 rounded-2xl shadow-sm text-center">
+                                <p class="text-gray-500 mb-2">No tienes perfiles creados todavía.</p>
+                                <a href="perfiles.html" class="text-crono-teal font-bold hover:underline text-sm">Crear un perfil aquí</a>
+                            </div>`;
+                    return;
+                }
+
+                contenedor.innerHTML = "";
+
+                for (const perfil of perfiles) {
+                    const idPerfil = perfil.idPerfil;
+                    const nombrePerfil = perfil.nombre;
+
+                    const cardHTML = `
+                            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                                <button onclick="toggleAcordeon('perfil-${idPerfil}')" class="w-full p-5 bg-white flex justify-between items-center hover:bg-crono-light/30 transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-crono-light text-crono-teal rounded-full flex items-center justify-center font-bold text-lg">
+                                            👤
+                                        </div>
+                                        <div class="text-left">
+                                            <h3 class="font-bold text-crono-dark text-base md:text-lg">${nombrePerfil}</h3>
+                                            <p class="text-xs text-gray-500" id="contador-${idPerfil}">Cargando medicamentos...</p>
+                                        </div>
+                                    </div>
+                                    <svg id="icon-perfil-${idPerfil}" class="w-6 h-6 text-crono-teal transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+
+                                <div id="perfil-${idPerfil}" class="hidden flex flex-col gap-3 p-4 bg-gray-50 border-t border-gray-100">
+                                    <!-- Aquí se inyectarán los medicamentos activos -->
+                                </div>
+                            </div>
+                        `;
+                    contenedor.innerHTML += cardHTML;
+
+                    await cargarMedicamentosPorPerfil(idUsuario, idPerfil);
+                }
+
+            } catch (error) {
+                console.error("Error al cargar perfiles para el dashboard:", error);
+                contenedor.innerHTML = `<div class="bg-white p-6 rounded-2xl shadow-sm text-center"><p class="text-red-500">Error al cargar la información.</p></div>`;
+            }
+        }
+
+        async function cargarMedicamentosPorPerfil(idUsuario, idPerfil) {
+            const contenedorLista = document.getElementById(`perfil-${idPerfil}`);
+            const contadorLabel = document.getElementById(`contador-${idPerfil}`);
+
+            try {
+                const medicamentos = await llamarApi(`${API}/medicamentos/activos/${idUsuario}/${idPerfil}`);
+
+                contadorLabel.textContent = `${medicamentos.length} medicamentos activos`;
+                contenedorLista.innerHTML = "";
+
+                if (!medicamentos || medicamentos.length === 0) {
+                    contenedorLista.innerHTML = `<p class="text-gray-400 text-sm italic text-center py-2">No hay esquemas médicos activos para este perfil.</p>`;
+                    return;
+                }
+
+                medicamentos.forEach(med => {
+                    const proximaTomaTexto = med.proximaToma ? new Date(med.proximaToma).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Pendiente';
+
+                    // Cada fármaco ahora enlaza correctamente a su pantalla de detalle pasando el ID único (?id=...)
+                    const farmacoHTML = `
+                            <a href="detalle_farmaco.html?id=${med.idMedicamento}" class="block bg-white rounded-xl p-4 shadow-xs border border-gray-200 relative hover:shadow-md transition-shadow group">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-12 h-12 bg-crono-light rounded-full flex items-center justify-center shrink-0 group-hover:bg-crono-teal transition-colors">
+                                        <svg class="w-6 h-6 text-crono-blue group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M17.34 6.66a5.5 5.5 0 00-7.78 0L6.66 9.56a5.5 5.5 0 000 7.78 5.5 5.5 0 007.78 0l2.9-2.9a5.5 5.5 0 000-7.78zm-4.24 6.36l-2.12-2.12m5.66-2.12L13.1 5.24"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1 pr-12">
+                                        <h4 class="font-bold text-crono-dark text-base leading-tight group-hover:text-crono-teal transition-colors">${med.nombreMedicamento}</h4>
+                                        <p class="text-xs text-gray-500 mt-0.5">Vía: <span class="font-medium">${med.viaAdministracion || 'General'}</span></p>
+                                        <p class="text-xs md:text-sm text-gray-500 mt-0.5">Próxima toma: <span class="font-semibold text-crono-blue">${proximaTomaTexto}</span></p>
+                                    </div>
+                                </div>
+                            </a>
+                        `;
+                    contenedorLista.innerHTML += farmacoHTML;
+                });
+
+            } catch (error) {
+                console.error(`Error cargando medicamentos del perfil ${idPerfil}:`, error);
+                contadorLabel.textContent = `Error al cargar`;
+                contenedorLista.innerHTML = `<p class="text-red-400 text-sm italic text-center py-2">No se pudieron cargar los medicamentos.</p>`;
+            }
+        }
+
         function toggleAcordeon(idSeccion) {
             const contenido = document.getElementById(idSeccion);
             const icono = document.getElementById('icon-' + idSeccion);
@@ -185,151 +297,6 @@
                 icono.classList.remove('rotate-180');
             }
         }
-
-        function cerrarSesion() {
-            sessionStorage.removeItem("empleados_usuario");
-            localStorage.removeItem("usuarioLogueado");
-            window.location.replace("login.html");
-        }
-        document.getElementById('btnCerrarSesionLateral').addEventListener('click', cerrarSesion);
-        const btnSalirMovil = document.getElementById('btnCerrarSesion');
-        if (btnSalirMovil) {
-            btnSalirMovil.addEventListener('click', cerrarSesion);
-        }
-
-        // Cargar nombre del usuario logueado
-        document.addEventListener("DOMContentLoaded", () => {
-            const usuarioGuardado = localStorage.getItem("usuarioLogueado");
-            if (usuarioGuardado) {
-                try {
-                    const usuario = JSON.parse(usuarioGuardado);
-                    const spanNombre = document.getElementById("nombreUsuario");
-                    if (spanNombre && usuario.nombre) {
-                        spanNombre.textContent = usuario.nombre;
-                    }
-                } catch (error) {
-                    console.error("Error al leer los datos del usuario:", error);
-                }
-            } else {
-                window.location.href = "login.html";
-            }
-        });
-
-        document.addEventListener("DOMContentLoaded", () => {
-            // 1. Mostrar el nombre del usuario logueado en el saludo
-            mostrarNombreUsuario();
-
-            // 2. Obtener el ID del usuario actual (puedes guardarlo en localStorage al iniciar sesión)
-            const idUsuarioLogueado = localStorage.getItem("idUsuario") || 1; // ID de respaldo por defecto
-
-            // 3. Cargar las secciones desplegables de perfiles
-            cargarSeccionesPerfiles(idUsuarioLogueado);
-        });
-
-        // Función para pintar el nombre en el saludo
-        function mostrarNombreUsuario() {
-            const nombreGuardado = localStorage.getItem("usuarioNombre");
-            const spanNombre = document.getElementById("nombreUsuario");
-            if (nombreGuardado && spanNombre) {
-                spanNombre.textContent = nombreGuardado;
-            }
-        }
-
-        // Cargar perfiles al abrir la página principal (Index) conectándose al API
-        async function cargarSeccionesPerfiles(idUsuario) {
-            try {
-                const response = await fetch(`https://localhost:7150/api/cronocare/perfiles/${idUsuario}`);
-                const perfiles = await response.json();
-
-                const contenedor = document.getElementById("contenedor-perfiles");
-                contenedor.innerHTML = ""; // Limpiar contenedor
-
-                if (perfiles.length === 0) {
-                    contenedor.innerHTML = `<p class="text-muted text-center">No hay perfiles registrados.</p>`;
-                    return;
-                }
-
-                perfiles.forEach(perfil => {
-                    // Estructura visual de acordeón / sección desplegable por perfil
-                    const seccionHTML = `
-                <div class="card-perfil bg-white border border-gray-200 rounded-2xl shadow-sm p-4 mb-3">
-                    <div class="d-flex justify-content-between align-items-center flex items-center justify-between cursor-pointer" onclick="toggleDesplegable(${perfil.idPerfil})">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold">
-                                <i class="bi bi-person-circle">👤</i>
-                            </div>
-                            <div>
-                                <h5 class="font-bold text-gray-800 text-lg">${perfil.nombre || perfil.tipoPerfil}</h5>
-                                <small class="text-gray-500" id="contador-${perfil.idPerfil}">Cargando medicamentos...</small>
-                            </div>
-                        </div>
-                        <span class="text-gray-400 text-xl" id="icono-${perfil.idPerfil}">▼</span>
-                    </div>
-                    
-                    <!-- Contenido desplegable donde se listarán los medicamentos -->
-                    <div id="desplegable-${perfil.idPerfil}" class="medicamentos-lista mt-3 pt-3 border-t border-gray-100" style="display: none;">
-                        <!-- Se inyectarán los medicamentos activos -->
-                    </div>
-                </div>
-            `;
-                    contenedor.innerHTML += seccionHTML;
-
-                    // Cargar los medicamentos correspondientes a este perfil
-                    cargarMedicamentosPorPerfil(idUsuario, perfil.idPerfil);
-                });
-
-            } catch (error) {
-                console.error("Error al cargar perfiles:", error);
-            }
-        }
-
-        // Función para obtener los medicamentos de un perfil mediante el SP y pintarlos
-        async function cargarMedicamentosPorPerfil(idUsuario, idPerfil) {
-            try {
-                const response = await fetch(`https://localhost:7150/api/cronocare/medicamentos/activos/${idUsuario}/${idPerfil}`);
-                const medicamentos = await response.json();
-
-                const contenedorLista = document.getElementById(`desplegable-${idPerfil}`);
-                const contadorLabel = document.getElementById(`contador-${idPerfil}`);
-
-                contadorLabel.innerText = `${medicamentos.length} medicamentos activos`;
-                contenedorLista.innerHTML = "";
-
-                if (medicamentos.length === 0) {
-                    contenedorLista.innerHTML = `<p class="text-gray-400 text-sm italic">No hay esquemas médicos activos para este perfil.</p>`;
-                    return;
-                }
-
-                medicamentos.forEach(med => {
-                    contenedorLista.innerHTML += `
-                <div class="py-2 border-b border-gray-50 flex justify-between items-center">
-                    <div>
-                        <strong class="text-gray-700">${med.nombreMedicamento}</strong> <span class="text-xs text-gray-400">(${med.viaAdministracion})</span><br>
-                        <small class="text-indigo-600 font-medium">Próxima toma: ${med.proximaToma ? new Date(med.proximaToma).toLocaleString() : 'N/A'}</small>
-                    </div>
-                </div>
-            `;
-                });
-            } catch (error) {
-                console.error(`Error cargando medicamentos del perfil ${idPerfil}:`, error);
-            }
-        }
-
-        // Función para abrir/cerrar el acordeón visual de cada perfil
-        function toggleDesplegable(idPerfil) {
-            const el = document.getElementById(`desplegable-${idPerfil}`);
-            const icono = document.getElementById(`icono-${idPerfil}`);
-
-            if (el.style.display === "none") {
-                el.style.display = "block";
-                icono.textContent = "▲";
-            } else {
-                el.style.display = "none";
-                icono.textContent = "▼";
-            }
-        }
     </script>
-
-    <!-- <script src="js/app.js"></script> -->
 </body>
 </html>

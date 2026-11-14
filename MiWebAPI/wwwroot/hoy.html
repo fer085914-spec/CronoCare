@@ -56,7 +56,7 @@
     <!-- Encabezado Azul -->
     <div class="bg-crono-blue text-white p-4 md:px-8 md:py-5 shadow-md flex justify-between items-center z-10 w-full">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 flex items-center justify-center overflow-hidden shadow-sm bg-white rounded-full">
+            <div class="w-10 h-10 flex items-center justify-center overflow-hidden shadow-sm rounded-full">
                 <img src="/Images/logoCronoCare.png" alt="Logo CronoCare" class="w-full h-full object-cover">
             </div>
             <h1 class="text-2xl md:text-3xl font-bold tracking-wide">CronoCare</h1>
@@ -156,7 +156,6 @@
     </div>
 
     <script>
-        // --- 1. Lógica Segura del Menú Lateral ---
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         const openBtn = document.getElementById('openSidebar');
@@ -168,60 +167,137 @@
                 overlay.classList.toggle('hidden');
             }
         }
-
         if (openBtn) openBtn.addEventListener('click', toggleMenu);
         if (closeBtn) closeBtn.addEventListener('click', toggleMenu);
         if (overlay) overlay.addEventListener('click', toggleMenu);
 
         function cerrarSesion() {
-            sessionStorage.removeItem("empleados_usuario");
             localStorage.removeItem("usuarioLogueado");
+            sessionStorage.removeItem("empleados_usuario");
             window.location.replace("login.html");
         }
+        document.getElementById('btnCerrarSesionLateral')?.addEventListener('click', cerrarSesion);
+        document.getElementById('btnCerrarSesion')?.addEventListener('click', cerrarSesion);
 
-        const btnCerrarLateral = document.getElementById('btnCerrarSesionLateral');
-        if (btnCerrarLateral) btnCerrarLateral.addEventListener('click', cerrarSesion);
+        function obtenerUsuarioSesion() {
+            const guardado = localStorage.getItem("usuarioLogueado") || sessionStorage.getItem("empleados_usuario");
+            if (!guardado) return null;
+            try {
+                const u = JSON.parse(guardado);
+                const id = u.id ?? u.idUsuario;
+                return id ? { id: Number(id), nombre: u.nombre } : null;
+            } catch (e) {
+                return null;
+            }
+        }
 
-        const btnSalirMovil = document.getElementById('btnCerrarSesion');
-        if (btnSalirMovil) btnSalirMovil.addEventListener('click', cerrarSesion);
+        document.addEventListener("DOMContentLoaded", async () => {
+            const usuario = obtenerUsuarioSesion();
+            if (!usuario) {
+                window.location.replace("login.html");
+                return;
+            }
 
-        // --- 2. Interacción de Tomas (Desaparecer tarjetas) ---
-        const botonesAccion = document.querySelectorAll('.btn-accion');
-        const contenedorTomas = document.getElementById('contenedorTomas');
-        const mensajeVacio = document.getElementById('mensajeVacio');
+            const spanNombre = document.getElementById("nombreUsuario");
+            if (spanNombre && usuario.nombre) {
+                spanNombre.textContent = usuario.nombre;
+            }
 
-        botonesAccion.forEach(boton => {
-            boton.addEventListener('click', function () {
-                const tarjeta = this.closest('div.bg-white');
+            await cargarAgendaHoy(usuario.id);
+        });
+
+        async function cargarAgendaHoy(idUsuario) {
+            const contenedor = document.getElementById('contenedorTomas');
+            const mensajeVacio = document.getElementById('mensajeVacio');
+
+            try {
+                const response = await fetch(`/api/Auth/agenda/hoy/${idUsuario}`);
+                if (!response.ok) throw new Error("Error al obtener la agenda");
+
+                const tomas = await response.json();
+                contenedor.innerHTML = "";
+
+                // Mostrar solo las tomas que estén pendientes o por tocar hoy
+                const tomasPendientes = tomas.filter(t => t.estadoToma === "Pendiente" || t.estadoToma === "Toca");
+
+                if (tomasPendientes.length === 0) {
+                    mensajeVacio.classList.remove('hidden');
+                    return;
+                }
+
+                tomasPendientes.forEach(toma => {
+                    const horaFormateada = new Date(toma.fechaHoraProgramada).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    const tarjetaHTML = `
+                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-200 relative transition-all duration-500 ease-in-out" id="toma-${toma.idToma}">
+                            <!-- PERFIL EN UNA SOLA LÍNEA -->
+                            <div class="mb-3 pb-2 border-b border-gray-100 flex items-center justify-between text-xs md:text-sm text-gray-500">
+                                <span>👤 <strong class="text-crono-dark">${toma.perfil.nombre}</strong> (${toma.perfil.relacion})</span>
+                                <span>Nacimiento: ${toma.perfil.fechaNacimiento}</span>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-14 h-14 bg-crono-light rounded-full flex items-center justify-center shrink-0">
+                                    <svg class="w-8 h-8 text-crono-teal" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M17.34 6.66a5.5 5.5 0 00-7.78 0L6.66 9.56a5.5 5.5 0 000 7.78 5.5 5.5 0 007.78 0l2.9-2.9a5.5 5.5 0 000-7.78zm-4.24 6.36l-2.12-2.12m5.66-2.12L13.1 5.24"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1 pr-20">
+                                    <h3 class="font-bold text-crono-dark text-lg md:text-xl leading-tight">${toma.nombreMedicamento}</h3>
+                                    <p class="text-sm md:text-base text-gray-500 mt-1">Hora de la toma: <span class="font-semibold text-crono-blue">${horaFormateada} hrs</span></p>
+                                </div>
+                            </div>
+
+                            <!-- Botones de Confirmación (Tacha y Palomita) -->
+                            <div class="absolute bottom-4 right-4 flex gap-3">
+                                <!-- Tacha Roja (Omitida) -->
+                                <button onclick="actualizarEstadoToma(${toma.idToma}, 'Omitida')" class="w-8 h-8 rounded-full border-2 border-red-500 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors" title="No tomada / Omitida">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                                <!-- Palomita Verde (Tomada) -->
+                                <button onclick="actualizarEstadoToma(${toma.idToma}, 'Tomada')" class="w-8 h-8 rounded-full border-2 border-green-500 text-green-500 flex items-center justify-center hover:bg-green-500 hover:text-white transition-colors" title="Tomada">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    contenedor.innerHTML += tarjetaHTML;
+                });
+
+            } catch (error) {
+                console.error("Error al cargar la agenda de hoy:", error);
+                contenedor.innerHTML = `<div class="bg-white p-6 rounded-2xl shadow-sm text-center"><p class="text-red-500">Error al cargar las tomas de hoy.</p></div>`;
+            }
+        }
+
+        async function actualizarEstadoToma(idToma, nuevoEstado) {
+            const tarjeta = document.getElementById(`toma-${idToma}`);
+
+            try {
+                const response = await fetch('/api/Auth/agenda/actualizar-toma', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ idToma: idToma, nuevoEstado: nuevoEstado })
+                });
+
+                if (!response.ok) throw new Error("No se pudo actualizar el estado");
+
                 if (tarjeta) {
                     tarjeta.style.opacity = '0';
                     tarjeta.style.transform = 'scale(0.95)';
-
                     setTimeout(() => {
                         tarjeta.remove();
-                        if (contenedorTomas && contenedorTomas.children.length === 0 && mensajeVacio) {
-                            mensajeVacio.classList.remove('hidden');
+                        const contenedor = document.getElementById('contenedorTomas');
+                        if (contenedor && contenedor.children.length === 0) {
+                            document.getElementById('mensajeVacio').classList.remove('hidden');
                         }
-                    }, 500);
+                    }, 400);
                 }
-            });
-        });
-
-        // --- 3. Carga del Nombre de Usuario ---
-        document.addEventListener("DOMContentLoaded", () => {
-            const usuarioGuardado = localStorage.getItem("usuarioLogueado");
-            if (usuarioGuardado) {
-                try {
-                    const usuario = JSON.parse(usuarioGuardado);
-                    const spanNombre = document.getElementById("nombreUsuario");
-                    if (spanNombre && usuario.nombre) {
-                        spanNombre.textContent = usuario.nombre;
-                    }
-                } catch (error) {
-                    console.error("Error al leer los datos del usuario:", error);
-                }
+            } catch (error) {
+                console.error("Error al actualizar la toma:", error);
+                alert("Hubo un error al registrar la acción.");
             }
-        });
+        }
     </script>
 </body>
 </html>
