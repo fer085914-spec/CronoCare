@@ -81,27 +81,11 @@
             </button>
         </div>
 
-        <!-- Lista de Perfiles Guardados (Con clic interactivo en toda la tarjeta) -->
+        <!-- Lista de perfiles: se llena con los datos reales de la base de datos -->
         <div id="listaPerfiles" class="flex flex-col gap-4">
-
-            <!-- Perfil 1 (Propio) -->
-            <div onclick="seleccionarPerfil('Nombre del perfil', 'Propio')" class="bg-white p-5 rounded-2xl shadow-sm border-2 border-crono-teal flex items-center justify-between relative cursor-pointer hover:bg-crono-light/20 transition-all">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-crono-light text-crono-teal rounded-full flex items-center justify-center font-bold text-xl">
-                        👤
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h3 class="font-bold text-crono-dark text-lg">Mi Perfil (Mi nombre)</h3>
-                            <span class="bg-crono-teal text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">Activo</span>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">Parentesco: <b>Propio</b> | Fecha Nac: <b>00/00/0000</b></p>
-                    </div>
-                </div>
-                <span class="text-crono-teal font-bold text-sm hidden md:block">Seleccionar &rarr;</span>
+            <div class="bg-white p-6 rounded-2xl shadow-sm text-center">
+                <p class="text-gray-500">Cargando perfiles...</p>
             </div>
-
-
         </div>
 
     </div>
@@ -111,25 +95,21 @@
         <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl flex flex-col gap-5 relative animate-fade-in">
             <div class="flex justify-between items-center border-b pb-3">
                 <h3 class="text-lg font-bold text-crono-dark">Crear Perfil de Cuidado</h3>
-                <button id="btnCerrarModal" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+                <button id="btnCerrarModal" type="button" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
             </div>
 
             <form id="formNuevoPerfil" class="flex flex-col gap-4">
                 <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1 pl-1">Parentesco / Tipo de perfil:</label>
+                    <!-- Las opciones se cargan desde la base de datos (tabla TIPO_PERFIL) -->
                     <select id="tipoPerfilModal" class="w-full bg-gray-50 border-2 border-gray-200 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:border-crono-teal" required>
                         <option value="" disabled selected>Selecciona una opción</option>
-                        <option value="Propio">Propio</option>
-                        <option value="Madre o padre">Madre o padre</option>
-                        <option value="Hijo">Hijo</option>
-                        <option value="Otro familiar">Otro familiar</option>
-                        <option value="Otra persona">Otra persona</option>
                     </select>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1 pl-1">Nombre completo:</label>
-                    <input type="text" id="nombrePacienteModal" placeholder="Ej. Ana García" class="w-full bg-gray-50 border-2 border-gray-200 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:border-crono-teal" required>
+                    <input type="text" id="nombrePacienteModal" maxlength="100" placeholder="Ej. Ana García" class="w-full bg-gray-50 border-2 border-gray-200 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:border-crono-teal" required>
                 </div>
 
                 <div>
@@ -141,7 +121,7 @@
                     <button type="button" id="btnCancelarModal" class="w-1/2 bg-gray-200 text-gray-700 font-bold py-3 rounded-full hover:bg-gray-300 transition-colors text-xs uppercase tracking-wider">
                         Cancelar
                     </button>
-                    <button type="submit" class="w-1/2 bg-crono-teal text-white font-bold py-3 rounded-full hover:bg-crono-blue transition-colors text-xs uppercase tracking-wider shadow-md">
+                    <button type="submit" id="btnGuardarPerfil" class="w-1/2 bg-crono-teal text-white font-bold py-3 rounded-full hover:bg-crono-blue transition-colors text-xs uppercase tracking-wider shadow-md disabled:opacity-60">
                         Guardar Perfil
                     </button>
                 </div>
@@ -149,7 +129,7 @@
         </div>
     </div>
 
-    <!-- BARRA DE NAVEGACIÓN INFERIOR (Móvil) -> Incluye botón central de '+' y botón de PERFILES -->
+    <!-- BARRA DE NAVEGACIÓN INFERIOR (Móvil) -->
     <div class="md:hidden fixed bottom-0 w-full h-16 bg-white border-t border-gray-200 flex justify-between items-center px-2 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] z-30">
         <a href="index.html" class="flex flex-col items-center text-gray-400 hover:text-crono-teal w-1/5 transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
@@ -161,72 +141,272 @@
         </a>
         <!-- Botón flotante central de nuevo fármaco redirige a perfiles para elegir a quién recetar -->
         <!--<a href="perfiles.html" class="relative -top-6 bg-crono-teal text-white w-14 h-14 rounded-full flex items-center justify-center text-4xl shadow-lg border-4 border-white transition-transform pb-1 z-50">
-            +
+        +
         </a>-->
-        <!--<a href="perfiles.html" class="flex flex-col items-center text-crono-teal w-1/5 transition-colors">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-        <span class="text-[9px] font-bold mt-1">PERFILES</span>
-    </a>-->
-        <button class="flex flex-col items-center text-gray-400 hover:text-crono-teal w-1/5 transition-colors">
+            <!--<a href="perfiles.html" class="flex flex-col items-center text-crono-teal w-1/5 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            <span class="text-[9px] font-bold mt-1">PERFILES</span>
+        </a>-->
+        <a href="listo.html" class="flex flex-col items-center text-gray-400 hover:text-crono-teal w-1/5 transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span class="text-[9px] font-bold mt-1">LISTO</span>
-        </button>
-        <button id="btnCerrarSesion" class="flex flex-col items-center text-gray-400 hover:text-red-500 w-1/5 transition-colors" onclick="sessionStorage.removeItem('empleados_usuario'); window.location.replace('login.html');">
+        </a>
+        <!--<button class="flex flex-col items-center text-gray-400 hover:text-crono-teal w-1/5 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span class="text-[9px] font-bold mt-1">LISTO</span>
+        </button>-->
+        <button id="btnCerrarSesion" class="flex flex-col items-center text-gray-400 hover:text-red-500 w-1/5 transition-colors" onclick="cerrarSesion()">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
             <span class="text-[9px] font-bold mt-1">SALIR</span>
         </button>
     </div>
 
-    <!-- Scripts de Interacción -->
     <script>
-        // Lógica del Menú Lateral (PC)
+        // --- 1. LÓGICA DEL MENÚ LATERAL (sin cambios) ---
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         const openBtn = document.getElementById('openSidebar');
         const closeBtn = document.getElementById('closeSidebar');
 
         function toggleMenu() {
-            sidebar.classList.toggle('translate-x-full');
-            overlay.classList.toggle('hidden');
+            if (sidebar && overlay) {
+                sidebar.classList.toggle('translate-x-full');
+                overlay.classList.toggle('hidden');
+            }
         }
         if (openBtn) openBtn.addEventListener('click', toggleMenu);
         if (closeBtn) closeBtn.addEventListener('click', toggleMenu);
         if (overlay) overlay.addEventListener('click', toggleMenu);
 
-        // Función para guardar el perfil seleccionado y mandar directo a registrar fármaco
-        function seleccionarPerfil(nombrePerfil, tipoParentesco) {
+
+        // --- 2. SESIÓN: usuario que inició sesión ---
+        // login.html guarda en sessionStorage, con la clave 'cronocare_usuario', el objeto "usuario"
+        // que devuelve la API: { id, nombre, correo, tipoUso }
+        const CLAVE_SESION = 'usuarioLogueado';
+
+        function obtenerUsuarioSesion() {
+            const guardado = localStorage.getItem(CLAVE_SESION);
+            if (!guardado) return null;
+
+            try {
+                const u = JSON.parse(guardado);
+                const id = u.id ?? u.idUsuario;
+                return id ? { id: Number(id), nombre: u.nombre, tipoUso: u.tipoUso } : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function cerrarSesion() {
+            sessionStorage.removeItem(CLAVE_SESION);
+            sessionStorage.removeItem('perfilSeleccionado');
+            window.location.replace('login.html');
+        }
+
+        // --- 3. UTILIDADES ---
+        // Las rutas son relativas: el front y la API están en el mismo sitio, sin puertos fijos
+        const API = '/api/Auth';
+
+        async function llamarApi(url, opciones) {
+            const respuesta = await fetch(url, opciones);
+            let datos = null;
+            try { datos = await respuesta.json(); } catch (e) { /* sin cuerpo JSON */ }
+
+            if (!respuesta.ok) {
+                throw new Error((datos && datos.message) || 'No se pudo completar la solicitud.');
+            }
+            return datos;
+        }
+
+        function crearElemento(etiqueta, clases, texto) {
+            const elemento = document.createElement(etiqueta);
+            if (clases) elemento.className = clases;
+            if (texto !== undefined) elemento.textContent = texto;
+            return elemento;
+        }
+
+        function formatearFecha(iso) {
+            if (!iso) return '';
+            const [anio, mes, dia] = iso.split('-');
+            return `${dia}/${mes}/${anio}`;
+        }
+
+        let cantidadPerfiles = 0;
+
+        // --- 4. PERFILES DEL USUARIO (datos reales de la base de datos) ---
+        function mostrarMensajeLista(texto) {
+            const contenedor = document.getElementById('listaPerfiles');
+            contenedor.replaceChildren();
+
+            const caja = crearElemento('div', 'bg-white p-6 rounded-2xl shadow-sm text-center');
+            caja.appendChild(crearElemento('p', 'text-gray-500', texto));
+            contenedor.appendChild(caja);
+        }
+
+        function crearTarjetaPerfil(perfil) {
+            const tarjeta = crearElemento('div',
+                'bg-white p-5 rounded-2xl shadow-sm border-2 border-crono-teal flex items-center justify-between relative cursor-pointer hover:bg-crono-light/20 transition-all');
+            tarjeta.tabIndex = 0;
+            tarjeta.setAttribute('role', 'button');
+
+            const izquierda = crearElemento('div', 'flex items-center gap-4');
+            izquierda.appendChild(crearElemento('div',
+                'w-12 h-12 bg-crono-light text-crono-teal rounded-full flex items-center justify-center font-bold text-xl', '👤'));
+
+            const info = crearElemento('div');
+            const fila = crearElemento('div', 'flex items-center gap-2 flex-wrap');
+            fila.appendChild(crearElemento('h3', 'font-bold text-crono-dark text-lg', perfil.nombre));
+            fila.appendChild(crearElemento('span',
+                'bg-crono-teal text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase', perfil.tipoPerfil));
+            info.appendChild(fila);
+            info.appendChild(crearElemento('p', 'text-xs text-gray-500 mt-1',
+                `Edad: ${perfil.edad} años | Fecha Nac: ${formatearFecha(perfil.fechaNacimiento)}`));
+            izquierda.appendChild(info);
+
+            tarjeta.appendChild(izquierda);
+            tarjeta.appendChild(crearElemento('span', 'text-crono-teal font-bold text-sm hidden md:block', 'Seleccionar →'));
+
+            tarjeta.addEventListener('click', () => seleccionarPerfil(perfil));
+            tarjeta.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    seleccionarPerfil(perfil);
+                }
+            });
+
+            return tarjeta;
+        }
+
+        async function cargarPerfiles(idUsuario) {
+            const contenedor = document.getElementById('listaPerfiles');
+
+            try {
+                // GET -> sp_Perfil_ListarPorUsuario
+                const perfiles = await llamarApi(`${API}/perfiles/${idUsuario}`);
+                cantidadPerfiles = perfiles.length;
+
+                if (perfiles.length === 0) {
+                    mostrarMensajeLista('No tienes perfiles creados todavía. Usa el botón "Nuevo Perfil" para crear el primero.');
+                    return;
+                }
+
+                contenedor.replaceChildren();
+                perfiles.forEach((perfil) => contenedor.appendChild(crearTarjetaPerfil(perfil)));
+            } catch (error) {
+                console.error('Error al listar perfiles:', error);
+                mostrarMensajeLista('No se pudieron cargar tus perfiles. Recarga la página.');
+            }
+        }
+
+        // --- 5. TIPOS DE PERFIL (tabla TIPO_PERFIL) ---
+        async function cargarTiposPerfil() {
+            const select = document.getElementById('tipoPerfilModal');
+
+            try {
+                // GET -> sp_TipoPerfil_Listar
+                const tipos = await llamarApi(`${API}/catalogos/tipos-perfil`);
+                tipos.forEach((tipo) => {
+                    const opcion = document.createElement('option');
+                    opcion.value = tipo.idTipoPerfil;
+                    opcion.textContent = tipo.nombre;
+                    select.appendChild(opcion);
+                });
+            } catch (error) {
+                console.error('Error al cargar los tipos de perfil:', error);
+            }
+        }
+
+        // --- 6. SELECCIONAR PERFIL Y PASAR A REGISTRAR UN FÁRMACO ---
+        function seleccionarPerfil(perfil) {
             const perfilActivo = {
-                nombre: nombrePerfil,
-                parentesco: tipoParentesco
+                idPerfil: perfil.idPerfil,
+                nombre: perfil.nombre,
+                parentesco: perfil.tipoPerfil
             };
             sessionStorage.setItem('perfilSeleccionado', JSON.stringify(perfilActivo));
             window.location.href = 'nuevo_farmaco.html';
         }
 
-        // Lógica del Modal para Nuevo Perfil
-        const modal = document.getElementById('modalPerfil');
-        const btnAbrir = document.getElementById('btnAbrirModalNuevoPerfil');
-        const btnCerrar = document.getElementById('btnCerrarModal');
-        const btnCancelar = document.getElementById('btnCancelarModal');
+        // --- 7. INICIO DE LA PÁGINA ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const usuario = obtenerUsuarioSesion();
 
-        if(btnAbrir) btnAbrir.addEventListener('click', () => modal.classList.remove('hidden'));
-        if(btnCerrar) btnCerrar.addEventListener('click', () => modal.classList.add('hidden'));
-        if(btnCancelar) btnCancelar.addEventListener('click', () => modal.classList.add('hidden'));
+            // Sin sesión no se muestran perfiles de nadie
+            if (!usuario) {
+                window.location.replace('login.html');
+                return;
+            }
 
-        // Simulación de guardado de nuevo perfil desde el formulario del modal
-        document.getElementById('formNuevoPerfil').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const nombre = document.getElementById('nombrePacienteModal').value;
-            const parentesco = document.getElementById('tipoPerfilModal').value;
-            
-            alert(`¡Perfil de ${nombre} (${parentesco}) guardado con éxito!`);
-            modal.classList.add('hidden');
-            // Aquí podrías agregar la lógica para pintarlo dinámicamente en la lista si lo deseas
-        });
+            cargarPerfiles(usuario.id);
+            cargarTiposPerfil();
 
-        document.getElementById('btnCerrarSesionLateral')?.addEventListener('click', () => {
-            sessionStorage.removeItem("empleados_usuario");
-            window.location.replace("login.html");
+            const modal = document.getElementById('modalPerfil');
+            const btnAbrir = document.getElementById('btnAbrirModalNuevoPerfil');
+            const btnCerrar = document.getElementById('btnCerrarModal');
+            const btnCancelar = document.getElementById('btnCancelarModal');
+            const formNuevoPerfil = document.getElementById('formNuevoPerfil');
+            const btnGuardar = document.getElementById('btnGuardarPerfil');
+            const selectTipo = document.getElementById('tipoPerfilModal');
+            const campoFecha = document.getElementById('fechaNacimientoModal');
+
+            // La fecha de nacimiento no puede ser futura
+            const ahora = new Date();
+            campoFecha.max = new Date(ahora.getTime() - ahora.getTimezoneOffset() * 60000)
+                .toISOString().slice(0, 10);
+
+            if (btnAbrir) {
+                btnAbrir.addEventListener('click', () => {
+                    // Si es su primer perfil y usa la app para sí mismo, se sugiere el tipo "Propio"
+                    if (cantidadPerfiles === 0 && usuario.tipoUso !== 'cuidador') {
+                        const propio = Array.from(selectTipo.options)
+                            .find((o) => o.textContent.trim().toLowerCase() === 'propio');
+                        if (propio) selectTipo.value = propio.value;
+                    }
+                    modal.classList.remove('hidden');
+                });
+            }
+            if (btnCerrar) btnCerrar.addEventListener('click', () => modal.classList.add('hidden'));
+            if (btnCancelar) btnCancelar.addEventListener('click', () => modal.classList.add('hidden'));
+
+            // Guardar el perfil en la base de datos
+            if (formNuevoPerfil) {
+                formNuevoPerfil.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const nombre = document.getElementById('nombrePacienteModal').value.trim();
+
+                    const nuevoPerfil = {
+                        idUsuario: usuario.id,
+                        idTipoPerfil: Number(selectTipo.value),
+                        nombre: nombre,
+                        fechaNacimiento: campoFecha.value
+                    };
+
+                    btnGuardar.disabled = true;
+
+                    try {
+                        // POST -> sp_Perfil_Crear
+                        await llamarApi(`${API}/perfil/crear`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(nuevoPerfil)
+                        });
+
+                        alert(`¡Perfil de ${nombre} guardado con éxito!`);
+                        modal.classList.add('hidden');
+                        formNuevoPerfil.reset();
+                        cargarPerfiles(usuario.id);
+                    } catch (error) {
+                        console.error('Error al guardar el perfil:', error);
+                        alert('No se pudo guardar el perfil: ' + error.message);
+                    } finally {
+                        btnGuardar.disabled = false;
+                    }
+                });
+            }
+
+            // Cerrar Sesión Lateral
+            document.getElementById('btnCerrarSesionLateral')?.addEventListener('click', cerrarSesion);
         });
     </script>
 </body>

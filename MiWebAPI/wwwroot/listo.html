@@ -6,18 +6,18 @@
     <title>CronoCare - Medicamentos Terminados</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-                tailwind.config = {
-                    theme: {
-                        extend: {
-                            colors: {
-                                'crono-blue': '#27749C',
-                                'crono-light': '#E1F4F6',
-                                'crono-teal': '#287F89',
-                                'crono-dark': '#222222'
-                            }
-                        }
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'crono-blue': '#27749C',
+                        'crono-light': '#E1F4F6',
+                        'crono-teal': '#287F89',
+                        'crono-dark': '#222222'
                     }
                 }
+            }
+        }
     </script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -75,27 +75,12 @@
             <p class="text-gray-600 mt-1 md:text-lg">Tus medicamentos concluidos</p>
         </div>
 
-        <div class="flex flex-col gap-4">
-
-            <!-- Tarjeta de Medicamento Terminado (Enlaza a finalizado.html) -->
-            <a href="finalizado.html" class="block bg-white/70 rounded-2xl p-5 shadow-sm border border-gray-200 relative hover:shadow-md transition-shadow group">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center shrink-0 group-hover:bg-gray-200 transition-colors">
-                        <svg class="w-6 h-6 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M17.34 6.66a5.5 5.5 0 00-7.78 0L6.66 9.56a5.5 5.5 0 000 7.78 5.5 5.5 0 007.78 0l2.9-2.9a5.5 5.5 0 000-7.78zm-4.24 6.36l-2.12-2.12m5.66-2.12L13.1 5.24"></path>
-                        </svg>
-                    </div>
-                    <div class="flex-1 pr-12">
-                        <h3 class="font-bold text-gray-700 text-lg md:text-xl leading-tight group-hover:text-crono-dark transition-colors">Nombre del medicamento</h3>
-                    </div>
-                </div>
-                <div class="absolute bottom-4 right-4 flex gap-3">
-                    <button class="text-gray-400 hover:text-red-500 transition-colors z-10" onclick="event.preventDefault();" title="Eliminar registro">
-                        <svg class="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    </button>
-                </div>
-            </a>
-
+        <!-- Contenedor dinámico (Sin plantillas estáticas hardcodeadas) -->
+        <div id="contenedorConcluidos" class="flex flex-col gap-4">
+            <!-- Estado de carga inicial -->
+            <div class="bg-white/70 rounded-2xl p-6 text-center border border-gray-200 shadow-sm">
+                <p class="text-gray-500 font-semibold">Cargando historial...</p>
+            </div>
         </div>
 
     </div>
@@ -105,7 +90,7 @@
         +
     </a>
 
-    <!-- BARRA DE NAVEGACIÓN INFERIOR (Móvil) -> El botón LISTO está iluminado -->
+    <!-- BARRA DE NAVEGACIÓN INFERIOR (Móvil) -->
     <div class="md:hidden fixed bottom-0 w-full h-16 bg-white border-t border-gray-200 flex justify-between items-center px-2 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] z-30">
         <a href="index.html" class="flex flex-col items-center text-gray-400 hover:text-crono-teal w-1/5 transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
@@ -118,7 +103,6 @@
         <a href="nuevo_farmaco.html" class="relative -top-6 bg-crono-teal text-white w-14 h-14 rounded-full flex items-center justify-center text-4xl shadow-lg border-4 border-white transition-transform pb-1 z-50">
             +
         </a>
-        <!-- LISTO (ACTIVO) -->
         <a href="listo.html" class="flex flex-col items-center text-crono-teal w-1/5 transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span class="text-[9px] font-bold mt-1">LISTO</span>
@@ -130,27 +114,137 @@
     </div>
 
     <!-- Scripts -->
+    <!-- Scripts -->
     <script>
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('sidebarOverlay');
-                const openBtn = document.getElementById('openSidebar');
-                const closeBtn = document.getElementById('closeSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
 
-                function toggleMenu() {
-                    sidebar.classList.toggle('translate-x-full');
-                    overlay.classList.toggle('hidden');
-                }
-                openBtn.addEventListener('click', toggleMenu);
-                closeBtn.addEventListener('click', toggleMenu);
-                overlay.addEventListener('click', toggleMenu);
+        function toggleMenu() {
+            sidebar.classList.toggle('translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+        if (openBtn) openBtn.addEventListener('click', toggleMenu);
+        if (closeBtn) closeBtn.addEventListener('click', toggleMenu);
+        if (overlay) overlay.addEventListener('click', toggleMenu);
 
-                function cerrarSesion() {
-                    sessionStorage.removeItem("empleados_usuario");
-                    window.location.replace("login.html");
+        function cerrarSesion() {
+            localStorage.removeItem("usuarioLogueado");
+            sessionStorage.removeItem("empleados_usuario");
+            sessionStorage.removeItem("idPerfilSeleccionado");
+            window.location.replace("login.html");
+        }
+        document.getElementById('btnCerrarSesionLateral').addEventListener('click', cerrarSesion);
+        const btnSalirMovil = document.getElementById('btnCerrarSesion');
+        if (btnSalirMovil) btnSalirMovil.addEventListener('click', cerrarSesion);
+
+        function obtenerUsuarioSesion() {
+            const guardado = localStorage.getItem("usuarioLogueado") || sessionStorage.getItem("empleados_usuario");
+            if (!guardado) return null;
+            try {
+                const u = JSON.parse(guardado);
+                const id = u.id ?? u.idUsuario;
+                return id ? Number(id) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const idUsuario = obtenerUsuarioSesion();
+
+            if (!idUsuario) {
+                window.location.replace("login.html");
+                return;
+            }
+
+            // Ya no exigimos idPerfilSeleccionado, consultamos directo por usuario
+            await cargarMedicamentosConcluidos(idUsuario);
+        });
+
+        async function cargarMedicamentosConcluidos(idUsuario) {
+            const contenedor = document.getElementById("contenedorConcluidos");
+
+            try {
+                // Llamamos al endpoint general de usuario
+                const response = await fetch(`/api/Auth/medicamentos/concluidos/usuario/${idUsuario}`);
+                if (!response.ok) throw new Error("Error al obtener los medicamentos concluidos.");
+
+                const lista = await response.json();
+                contenedor.innerHTML = "";
+
+                // SI NO HAY CONCLUIDOS, MOSTRAMOS UN BANNER INFORMATIVO
+                if (lista.length === 0) {
+                    contenedor.innerHTML = `
+                            <div class="bg-white/80 rounded-2xl p-8 text-center border border-gray-200 shadow-sm flex flex-col items-center justify-center gap-3">
+                                <div class="w-14 h-14 bg-crono-light rounded-full flex items-center justify-center text-crono-teal text-2xl">
+                                    ✅
+                                </div>
+                                <h3 class="font-bold text-gray-700 text-lg">No hay historial aún</h3>
+                                <p class="text-gray-500 text-sm max-w-sm">Los tratamientos médicos concluidos de tus perfiles aparecerán automáticamente aquí.</p>
+                            </div>`;
+                    return;
                 }
-                document.getElementById('btnCerrarSesionLateral').addEventListener('click', cerrarSesion);
-                const btnSalirMovil = document.getElementById('btnCerrarSesion');
-                if (btnSalirMovil) btnSalirMovil.addEventListener('click', cerrarSesion);
+
+                // SI SÍ HAY, LOS RENDERIZAMOS CON TU DISEÑO DE PLANTILLA ORIGINAL
+                lista.forEach(med => {
+                    const iconoOImg = med.foto
+                        ? `<img src="${med.foto}" alt="${med.nombreMedicamento}" class="w-full h-full object-cover rounded-full">`
+                        : `<svg class="w-6 h-6 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.34 6.66a5.5 5.5 0 00-7.78 0L6.66 9.56a5.5 5.5 0 000 7.78 5.5 5.5 0 007.78 0l2.9-2.9a5.5 5.5 0 000-7.78zm-4.24 6.36l-2.12-2.12m5.66-2.12L13.1 5.24"></path></svg>`;
+
+                    const card = document.createElement("a");
+                    // Aquí mandamos el ID para abrir la ficha correspondiente
+                    card.href = `finalizado.html?id=${med.idMedicamento}`;
+                    card.className = "block bg-white/70 rounded-2xl p-5 shadow-sm border border-gray-200 relative hover:shadow-md transition-shadow group";
+
+                    card.innerHTML = `
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center shrink-0 overflow-hidden group-hover:bg-gray-200 transition-colors">
+                                    ${iconoOImg}
+                                </div>
+                                <div class="flex-1 pr-12">
+                                    <h3 class="font-bold text-gray-700 text-lg md:text-xl leading-tight group-hover:text-crono-dark transition-colors">${med.nombreMedicamento}</h3>
+                                    <p class="text-xs text-gray-500 mt-1">Concluyó el: ${med.fechaFin} | Vía: ${med.viaAdministracion}</p>
+                                    <p class="text-xs text-crono-teal font-semibold mt-0.5">Tomas tomadas: ${med.tomasTomadas} de ${med.tomasTotales}</p>
+                                </div>
+                            </div>
+                            <div class="absolute bottom-4 right-4 flex gap-3">
+                                <button class="text-gray-400 hover:text-red-500 transition-colors z-10" onclick="event.preventDefault();" title="Eliminar registro">
+                                    <svg class="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
+                        `;
+
+                    contenedor.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error("Error:", error);
+                contenedor.innerHTML = `
+                        <div class="bg-red-50 rounded-2xl p-6 text-center border border-red-200">
+                            <p class="text-red-500 font-semibold text-sm">Error al cargar el historial de medicamentos.</p>
+                        </div>`;
+            }
+        }
+
+        function obtenerUsuarioSesion() {
+            const guardado = localStorage.getItem("usuarioLogueado") || sessionStorage.getItem("empleados_usuario");
+            if (!guardado) return null;
+            try {
+                const u = JSON.parse(guardado);
+                // Si el objeto guardado tiene una propiedad id o idUsuario numérica
+                const rawId = u.id ?? u.idUsuario ?? u;
+                const idNum = Number(rawId);
+
+                // Validamos que sea un número válido y mayor a 0
+                return (!isNaN(idNum) && idNum > 0) ? idNum : null;
+            } catch (e) {
+                // Por si el storage guardó un texto plano en lugar de un JSON
+                const idNum = Number(guardado);
+                return (!isNaN(idNum) && idNum > 0) ? idNum : null;
+            }
+        }
     </script>
 </body>
 </html>

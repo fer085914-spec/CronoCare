@@ -6,24 +6,23 @@
     <title>CronoCare - Detalle del Fármaco</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-                tailwind.config = {
-                    theme: {
-                        extend: {
-                            colors: {
-                                'crono-blue': '#27749C',
-                                'crono-light': '#E1F4F6',
-                                'crono-teal': '#287F89',
-                                'crono-dark': '#222222'
-                            }
-                        }
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'crono-blue': '#27749C',
+                        'crono-light': '#E1F4F6',
+                        'crono-teal': '#287F89',
+                        'crono-dark': '#222222'
                     }
                 }
+            }
+        }
     </script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="min-h-screen bg-crono-light font-sans overflow-x-hidden flex flex-col">
-
-    <!-- Menú Lateral Desplegable (PC) -->
+    <!--menu lateral-->
     <div id="sidebar" class="fixed inset-y-0 right-0 w-64 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50 flex flex-col">
         <div class="p-5 bg-crono-blue text-white flex justify-between items-center">
             <span class="font-bold text-lg">Menú CronoCare</span>
@@ -35,11 +34,14 @@
             <a href="index.html" class="text-gray-700 hover:text-crono-teal font-semibold flex items-center gap-2">
                 <span class="text-xl">🏠</span> Inicio
             </a>
-            <a href="#" class="text-gray-700 hover:text-crono-teal font-semibold flex items-center gap-2">
+            <a href="hoy.html" class="text-gray-700 hover:text-crono-teal font-semibold flex items-center gap-2">
                 <span class="text-xl">📅</span> Agenda de Hoy
             </a>
             <a href="nuevo_farmaco.html" class="text-gray-700 hover:text-crono-teal font-semibold flex items-center gap-2">
                 <span class="text-xl">➕</span> Nuevo Registro
+            </a>
+            <a href="listo.html" class="text-gray-700 hover:text-crono-teal font-semibold flex items-center gap-2">
+                <span class="text-xl">✅</span> Terminados
             </a>
             <hr>
             <button id="btnCerrarSesionLateral" class="text-left text-red-500 hover:text-red-700 font-semibold flex items-center gap-2">
@@ -49,12 +51,12 @@
     </div>
 
     <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 transition-opacity"></div>
-
-    <!-- Encabezado Azul -->
+    <!--Encabezado Azul-->
     <div class="bg-crono-blue text-white p-4 md:px-8 md:py-5 shadow-md flex justify-between items-center z-10 w-full">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 flex items-center justify-center overflow-hidden shadow-sm">
                 <img src="/Images/logoCronoCare.png" alt="Logo CronoCare" class="w-full h-full object-cover">
+                <a href="index.html"></a>
             </div>
             <h1 class="text-2xl md:text-3xl font-bold tracking-wide">CronoCare</h1>
         </div>
@@ -63,13 +65,11 @@
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
     </div>
-
-    <!-- Contenedor Principal (Expandido a max-w-4xl para permitir 2 columnas) -->
+    <!--Contenedor Principal (Expandido a max-w-4xl para permitir 2 columnas)-->
     <div class="flex-1 pb-24 md:pb-12 w-full max-w-4xl mx-auto flex flex-col p-6 mt-2 relative">
-
-        <!-- Botón Volver y Título -->
+        <!--Botón Volver y Título-->
         <div class="flex items-center mb-8 w-full">
-            <!-- Ícono de flecha doble como en Figma -->
+            <!--Ícono de flecha doble como en Figma-->
             <a href="index.html" class="text-gray-700 hover:text-crono-teal transition-colors flex-shrink-0">
                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
@@ -77,34 +77,32 @@
             </a>
             <h2 class="text-xl md:text-2xl font-bold text-center text-black tracking-wide flex-1 mr-10 uppercase">DETALLE</h2>
         </div>
-
-        <!-- Layout de Cuadrícula: 1 columna en móvil, 2 en PC -->
+        <!--Layout de Cuadrícula: 1 columna en móvil, 2 en PC-->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 w-full">
 
-            <!-- COLUMNA IZQUIERDA: Foto y Datos -->
+            <!--COLUMNA IZQUIERDA: Foto y Datos-->
             <div class="flex flex-col gap-4">
-                <!-- Recuadro para la Fotografía -->
+                <!--Recuadro para la Fotografía-->
                 <div class="w-full h-56 md:h-64 bg-gray-200/50 rounded-xl flex items-center justify-center border-2 border-gray-400 shadow-sm">
                     <span class="text-gray-400 font-bold tracking-widest text-sm md:text-base">FOTO DEL FÁRMACO</span>
                 </div>
-
-                <!-- Datos del Fármaco (Solo lectura, estilo translúcido) -->
+                <!--Datos del Fármaco (Solo lectura, estilo translúcido)-->
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                        <span class="text-xl opacity-70">💊</span>
+                        <span class="text-xl opacity-100">💊</span>
                     </div>
-                    <input type="text" value="Nombre del medicamento" readonly class="w-full bg-transparent border border-gray-400 rounded-full pl-14 pr-4 py-3 text-gray-400 font-semibold focus:outline-none">
+                    <input type="text" value="Nombre del medicamento" readonly class="w-full bg-transparent border border-gray-700 rounded-full pl-14 pr-4 py-3 text-gray-800 font-semibold focus:outline-none">
                 </div>
 
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                         <span class="text-xl opacity-70">🩹</span>
                     </div>
-                    <input type="text" value="Vía de administración" readonly class="w-full bg-transparent border border-gray-400 rounded-full pl-14 pr-4 py-3 text-gray-400 font-semibold focus:outline-none">
+                    <input type="text" value="Vía de administración" readonly class="w-full bg-transparent border border-gray-700 rounded-full pl-14 pr-4 py-3 text-gray-800 font-semibold focus:outline-none">
                 </div>
             </div>
 
-            <!-- COLUMNA DERECHA: Tomas programadas -->
+            <!--COLUMNA DERECHA: Tomas programadas-->
             <div class="flex flex-col">
                 <h3 class="font-bold text-black mb-4 text-lg md:text-xl">Tomas programadas</h3>
 
@@ -113,8 +111,7 @@
                 </div>
 
                 <div class="flex flex-col gap-4 md:pl-2">
-
-                    <!-- Toma 1: Terminada -->
+                    <!--Toma 1: Terminada-->
                     <div class="flex items-center justify-between p-2">
                         <div class="flex items-center gap-4">
                             <div class="w-8 h-8 rounded-full border border-gray-400 flex items-center justify-center text-gray-600 bg-transparent">
@@ -124,8 +121,7 @@
                         </div>
                         <span class="text-black text-xs font-semibold mr-4">Tomada</span>
                     </div>
-
-                    <!-- Toma 2: ¡Toca ahora! (Fondo sombreado) -->
+                    <!--Toma 2: ¡Toca ahora! (Fondo sombreado)-->
                     <div class="flex items-center justify-between bg-crono-teal/30 p-2 rounded-2xl">
                         <div class="flex items-center gap-4">
                             <div class="w-8 h-8 rounded-full border border-black flex items-center justify-center text-black bg-transparent">
@@ -135,8 +131,7 @@
                         </div>
                         <span class="text-black text-xs font-semibold mr-4">¡TOCA!</span>
                     </div>
-
-                    <!-- Toma 3: Pendiente -->
+                    <!--Toma 3: Pendiente-->
                     <div class="flex items-center justify-between p-2">
                         <div class="flex items-center gap-4">
                             <div class="w-8 h-8 rounded-full border border-gray-400 flex items-center justify-center text-gray-600 bg-transparent">
@@ -152,15 +147,13 @@
 
         </div>
     </div>
-
-    <!-- BOTÓN FLOTANTE DE EDITAR (Lápiz) -->
-    <a href="editar_farmaco.html" class="fixed bottom-24 right-4 md:bottom-10 md:right-10 bg-crono-blue text-white w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 hover:bg-blue-700 transition-all z-40">
+    <!--BOTÓN FLOTANTE DE EDITAR (Lápiz)-->
+    <a href="editar_farmaco.html" id="btnIrEditar" class="fixed bottom-24 right-4 md:bottom-10 md:right-10 bg-crono-blue text-white w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 hover:bg-blue-700 transition-all z-40">
         <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
         </svg>
     </a>
-
-    <!-- BARRA DE NAVEGACIÓN INFERIOR (Móvil) -->
+    <!--BARRA DE NAVEGACIÓN INFERIOR (Móvil)-->
     <div class="md:hidden fixed bottom-0 w-full h-16 bg-white border-t border-gray-200 flex justify-between items-center px-2 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] z-30">
         <a href="index.html" class="flex flex-col items-center text-gray-400 hover:text-crono-teal w-1/5 transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
@@ -184,24 +177,158 @@
     </div>
 
     <script>
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('sidebarOverlay');
-                const openBtn = document.getElementById('openSidebar');
-                const closeBtn = document.getElementById('closeSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
 
-                function toggleMenu() {
-                    sidebar.classList.toggle('translate-x-full');
-                    overlay.classList.toggle('hidden');
+        function toggleMenu() {
+            sidebar.classList.toggle('translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        if (openBtn) openBtn.addEventListener('click', toggleMenu);
+        if (closeBtn) closeBtn.addEventListener('click', toggleMenu);
+        if (overlay) overlay.addEventListener('click', toggleMenu);
+
+        // --- RECUPERAR SESIÓN ---
+        function obtenerUsuarioSesion() {
+            const guardado = localStorage.getItem('usuarioLogueado') || sessionStorage.getItem('empleados_usuario');
+            if (!guardado) return null;
+            try {
+                const u = JSON.parse(guardado);
+                const id = u.id ?? u.idUsuario;
+                return id ? Number(id) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const idUsuario = obtenerUsuarioSesion();
+            const params = new URLSearchParams(window.location.search);
+            const idMedicamento = params.get("id");
+
+            if (!idUsuario) {
+                window.location.replace("login.html");
+                return;
+            }
+
+            if (!idMedicamento) {
+                console.error("No se encontró un ID de medicamento en la URL.");
+                alert("No se especificó un medicamento.");
+                return;
+            }
+
+            try {
+                // Petición al nuevo endpoint que acepta usuario y medicamento
+                const response = await fetch(`/api/Auth/medicamentos/detalle/${idUsuario}/${idMedicamento}`);
+
+                if (!response.ok) {
+                    throw new Error(`Error al obtener los detalles: ${response.statusText}`);
                 }
 
-                openBtn.addEventListener('click', toggleMenu);
-                closeBtn.addEventListener('click', toggleMenu);
-                overlay.addEventListener('click', toggleMenu);
+                const data = await response.json();
+                console.log("Datos del fármaco cargados:", data);
 
-                document.getElementById('btnCerrarSesionLateral').addEventListener('click', () => {
-                    sessionStorage.removeItem("empleados_usuario");
-                    window.location.replace("login.html");
-                });
+                // 1. Rellenar la Fotografía
+                const contenedorFoto = document.querySelector(".w-full.h-56.md\\:h-64");
+                if (contenedorFoto) {
+                    if (data.foto) {
+                        contenedorFoto.innerHTML = `<img src="${data.foto}" alt="Foto del fármaco" class="w-full h-full object-cover rounded-xl">`;
+                    } else {
+                        contenedorFoto.innerHTML = `<span class="text-gray-400 font-bold tracking-widest text-sm md:text-base">SIN FOTO</span>`;
+                    }
+                }
+
+                // 2. Rellenar los inputs de solo lectura (Nombre y Vía)
+                const inputs = document.querySelectorAll("input[readonly]");
+                if (inputs.length >= 2) {
+                    inputs[0].value = data.nombreMedicamento || "Sin nombre";
+                    inputs[1].value = data.viaAdministracion || "No especificada";
+                }
+
+                // 3. Actualizar el botón flotante de edición
+                const btnEditar = document.getElementById("btnIrEditar");
+                if (btnEditar) {
+                    btnEditar.href = `editar_farmaco.html?id=${idMedicamento}`;
+                }
+
+                // 4. Rellenar dinámicamente el listado de tomas programadas
+                const contenedorTomas = document.querySelector(".flex.flex-col.gap-4.md\\:pl-2");
+                const listaTomas = data.tomas || [];
+
+                if (contenedorTomas) {
+                    contenedorTomas.innerHTML = "";
+
+                    if (listaTomas.length === 0) {
+                        contenedorTomas.innerHTML = `<p class="text-gray-500 text-sm">No hay tomas programadas para hoy.</p>`;
+                        return;
+                    }
+
+                    listaTomas.forEach((toma, index) => {
+                        let htmlToma = "";
+                        const numeroToma = index + 1;
+                        const horaToma = toma.hora || '';
+                        const estado = toma.estado; // 'Tomada', 'Toca', 'Omitida', 'Pendiente'
+
+                        if (estado === "Tomada") {
+                            htmlToma = `
+                                <div class="flex items-center justify-between p-2">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-8 h-8 rounded-full border border-gray-400 flex items-center justify-center text-gray-600 bg-transparent">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                        </div>
+                                        <span class="font-semibold text-black text-sm">Toma ${numeroToma} (${horaToma})</span>
+                                    </div>
+                                    <span class="text-gray-600 text-xs font-semibold mr-4">Tomada</span>
+                                </div>`;
+                        } else if (estado === "Toca" || estado === "¡TOCA!") {
+                            // Solo esta se ilumina como la toma activa del momento
+                            htmlToma = `
+                                <div class="flex items-center justify-between bg-crono-teal/30 p-2 rounded-2xl border border-crono-teal">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-8 h-8 rounded-full border border-black flex items-center justify-center text-black bg-transparent">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        </div>
+                                        <span class="font-semibold text-black text-sm">Toma ${numeroToma} (${horaToma})</span>
+                                    </div>
+                                    <span class="text-crono-teal text-xs font-bold mr-4">¡TOCA!</span>
+                                </div>`;
+                        } else if (estado === "Omitida") {
+                            htmlToma = `
+                                <div class="flex items-center justify-between p-2 opacity-60">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-8 h-8 rounded-full border border-red-400 flex items-center justify-center text-red-500 bg-transparent">
+                                            <span class="font-bold text-sm">✕</span>
+                                        </div>
+                                        <span class="font-semibold text-gray-600 text-sm">Toma ${numeroToma} (${horaToma})</span>
+                                    </div>
+                                    <span class="text-red-500 text-xs font-semibold mr-4">Omitida</span>
+                                </div>`;
+                        } else {
+                            // Pendiente (futura)
+                            htmlToma = `
+                                <div class="flex items-center justify-between p-2">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-8 h-8 rounded-full border border-gray-400 flex items-center justify-center text-gray-600 bg-transparent">
+                                            <span class="font-bold text-sm">!</span>
+                                        </div>
+                                        <span class="font-semibold text-black text-sm">Toma ${numeroToma} (${horaToma})</span>
+                                    </div>
+                                    <span class="text-gray-400 text-xs font-semibold mr-4">Pendiente</span>
+                                </div>`;
+                        }
+
+                        contenedorTomas.innerHTML += htmlToma;
+                    });
+                }
+
+            } catch (error) {
+                console.error("Error al cargar los detalles del fármaco:", error);
+            }
+        });
     </script>
+
 </body>
 </html>
